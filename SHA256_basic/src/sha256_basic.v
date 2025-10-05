@@ -1,7 +1,6 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 
-
 module sha256_core(
     input  wire         clk,
     input  wire         rst,
@@ -38,10 +37,10 @@ module sha256_core(
 			   LOAD_H_SET      = 4'd1,   // load a-h ban ??u
 			   LOAD_H_CAPTURE  = 4'd2,
 			   LOAD_H_DONE     = 4'd3,
-			   LOAD_W0         = 4'd4,   // load 16 word ??u v‡o
-			   EXPAND_CALC     = 4'd5,   // tÌnh W[t] t?m
-			   EXPAND_W        = 4'd6,   // ghi W[t] v‡o register
-			   //COMPRESS_CALC   = 3'd5,   // tÌnh T1, T2, a_next Ö h_next
+			   LOAD_W0         = 4'd4,   // load 16 word ??u v√†o
+			   EXPAND_CALC     = 4'd5,   // t√≠nh W[t] t?m
+			   EXPAND_W        = 4'd6,   // ghi W[t] v√†o register
+			   //COMPRESS_CALC   = 3'd5,   // t√≠nh T1, T2, a_next ‚Ä¶ h_next
 			   COMPRESS_CALC_1  = 4'd7,
 			   COMPRESS_CALC_2_WAIT = 4'd8,
 			   COMPRESS_CALC_2  = 4'd9,
@@ -55,9 +54,7 @@ module sha256_core(
     reg [6:0] w_idx;
     
     reg [31:0] t_S0, t_S1, t_ch, t_temp1, t_maj, t_temp2;
-  //  reg [31:0] t_s0, t_s1;
     integer i;
-    
     
     always @(posedge clk or posedge rst) begin
         if(rst) begin
@@ -89,7 +86,7 @@ module sha256_core(
                 end
                 
                 // capture the H_value corresponding to the previously set H_addr
-              LOAD_H_CAPTURE: begin
+               LOAD_H_CAPTURE: begin
                     H_reg[h_idx] <= H_value;   // sample ROM output for addr set on previous cycle
                     if (h_idx == 3'd7) begin
                         status <= LOAD_H_DONE; // all 8 words captured
@@ -100,7 +97,7 @@ module sha256_core(
                     end
                 end
                 
-              LOAD_H_DONE: begin
+               LOAD_H_DONE: begin
                     // H_reg[0..7] now valid and stable
                     status <= LOAD_W0;
                 end
@@ -112,7 +109,6 @@ module sha256_core(
                   W[i] <= block_in[511 - i*32 -: 32];
                        end
                     w_idx <= 16;
-                    
 //                    t_S0 <= ( {W[w_idx-15][6:0],  W[w_idx-15][31:7]} ) ^ ( {W[w_idx-15][17:0], W[w_idx-15][31:18]} ) ^ ({3'b0, W[w_idx-15][31:3]} );
 //                    t_S1 <= ( {W[w_idx-2][16:0],  W[w_idx-2][31:17]} ) ^ ( {W[w_idx-2][18:0],  W[w_idx-2][31:19]} ) ^ ( {10'b0, W[w_idx-2][31:10]} );
 					
@@ -154,15 +150,12 @@ module sha256_core(
                                   status <= COMPRESS_CALC_2; // ch? ch? ROM ?n ??nh
                                 end
                      
-                        COMPRESS_CALC_2: begin
-                            t_temp1 <= h + t_S1 + t_ch + K_value + W[round];
-                            t_temp2 <= t_S0 + t_maj;
-                            status <= COMPRESS_UPDATE;
-				        end
-				
-				
-				
-				
+               COMPRESS_CALC_2: begin
+                      t_temp1 <= h + t_S1 + t_ch + K_value + W[round];
+                      t_temp2 <= t_S0 + t_maj;
+                      status <= COMPRESS_UPDATE;
+			   end	
+			  
                COMPRESS_UPDATE: begin
                     h <= g;
                     g <= f;
