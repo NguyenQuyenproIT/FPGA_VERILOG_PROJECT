@@ -34,10 +34,10 @@ module sha256_core(
     );
     
     localparam IDLE            = 4'd0,
-			   LOAD_H_SET      = 4'd1,   // load a-h ban ??u
+			   LOAD_H_SET      = 4'd1,   // load a-h ban dau
 			   LOAD_H_CAPTURE  = 4'd2,
 			   LOAD_H_DONE     = 4'd3,
-			   LOAD_W0         = 4'd4,   // load 16 word ??u vào
+			   LOAD_W0         = 4'd4,   // load 16 word dau vào
 			   EXPAND_CALC     = 4'd5,   // tính W[t] t?m
 			   EXPAND_W        = 4'd6,   // ghi W[t] vào register
 			   //COMPRESS_CALC   = 3'd5,   // tính T1, T2, a_next … h_next
@@ -47,7 +47,7 @@ module sha256_core(
 			   
 			   
 			   COMPRESS_UPDATE = 4'd10,   // ghi a-h
-			   FINISH          = 4'd11;   // xu?t k?t qu?
+			   FINISH          = 4'd11;   // xuat ket qua
 
     reg [3:0] status = IDLE;
     reg [2:0] h_idx;
