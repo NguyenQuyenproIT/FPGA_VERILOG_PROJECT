@@ -905,9 +905,3 @@ H[4] = 0x510e527f, H[5] = 0x9b05688c, H[6] = 0x1f83d9ab, H[7] = 0x5be0cd19
 4. **Output Format**: hash_out[255:0] = [H_reg[0]][H_reg[1]]...[H_reg[7]]
 5. **Reset**: Active High (rst = 1 để reset)
 
----
-
-**Phiên bản**: 1.0  
-**Cập nhật**: Tháng 5, 2026  
-**Tác giả**: FPGA SHA256 Development Team
-
