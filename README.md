@@ -154,7 +154,7 @@ H₇ = H₇ + h
     ┌─────────────────────────────────┐
     │  Message Expansion              │
     │  - Load W[0..15] từ block       │
-    │  - Tính W[16..63] dùng σ0, σ1  │
+    │  - Tính W[16..63] dùng σ0, σ1   │
     └────────────┬────────────────────┘
                  │
                  ▼
@@ -162,16 +162,16 @@ H₇ = H₇ + h
     │  Compression (64 vòng lặp)      │
     │  - t = 0 đến 63                 │
     │  - Tính T1, T2                  │
-    │  - Cập nhật a,b,c,d,e,f,g,h    │
+    │  - Cập nhật a,b,c,d,e,f,g,h     │
     │  - Sử dụng K[t] từ ROM K        │
     └────────────┬────────────────────┘
                  │
                  ▼
     ┌─────────────────────────────────┐
     │  Finalization                   │
-    │  - H₀ = H₀ + a                 │
-    │  - H₁ = H₁ + b                 │
-    │  - ... (Cập nhật cả 8 giá trị) │
+    │  - H₀ = H₀ + a                  │
+    │  - H₁ = H₁ + b                  │
+    │  - ... (Cập nhật cả 8 giá trị)  │
     └────────────┬────────────────────┘
                  │
                  ▼
@@ -232,7 +232,7 @@ FPGA_VERILOG_PROJECT/
         │   W[0:63]      │ │  (FSM)        │ └─────────────────┘
         │                │ │               │        │
         │  Registers:    │ │  States:      │        ├── rom_K
-        │  a,b,c,d,e,f,g│ │  IDLE         │        │   (64 từ K)
+        │  a,b,c,d,e,f,g │ │  IDLE         │        │   (64 từ K)
         │  h             │ │  LOAD_H_*     │        │
         │                │ │  LOAD_W0      │        └── rom_H
         │  H_reg[0:7]    │ │  EXPAND_*     │            (8 từ H)
@@ -362,7 +362,7 @@ Module `sha256_core` sử dụng FSM (Finite State Machine) gồm 14 trạng th�
                      ▼
         ┌─────────────────────────────────┐
         │   LOAD_H_CAPTURE (0x2)          │
-        │  Nhận giá trị H từ ROM           │
+        │  Nhận giá trị H từ ROM          │
         │  (Lặp lại 8 lần)                │
         └────────────┬────────────────────┘
                      │ h_idx=7
@@ -382,8 +382,8 @@ Module `sha256_core` sử dụng FSM (Finite State Machine) gồm 14 trạng th�
                      ▼
         ┌─────────────────────────────────┐
         │    EXPAND_CALC (0x5)            │
-        │  Tính σ0(W[t-15]) và σ1(W[t-2])│
-        │  W[t] = W[t-16] + σ0 + ...     │
+        │  Tính σ0(W[t-15]) và σ1(W[t-2]) │
+        │  W[t] = W[t-16] + σ0 + ...      │
         └────────────┬────────────────────┘
                      │
                      ▼
@@ -410,15 +410,15 @@ Module `sha256_core` sử dụng FSM (Finite State Machine) gồm 14 trạng th�
         ┌─────────────────────────────────┐
         │  COMPRESS_CALC_2 (0x9)          │
         │  Tính T1, T2                    │
-        │  T1 = h + Σ1 + Ch + K[t] + W[t]│
-        │  T2 = Σ0 + Maj                 │
+        │  T1 = h + Σ1 + Ch + K[t] + W[t] │
+        │  T2 = Σ0 + Maj                  │
         └────────────┬────────────────────┘
                      │
                      ▼
         ┌─────────────────────────────────┐
         │   COMPRESS_UPDATE (0xA)         │
-        │  Cập nhật a,b,c,d,e,f,g,h      │
-        │  h=g, g=f, f=e, e=d+T1, ...    │
+        │  Cập nhật a,b,c,d,e,f,g,h       │
+        │  h=g, g=f, f=e, e=d+T1, ...     │
         │  (Lặp lại 64 vòng)              │
         └────────────┬────────────────────┘
                      │ round=63
@@ -426,7 +426,7 @@ Module `sha256_core` sử dụng FSM (Finite State Machine) gồm 14 trạng th�
         ┌─────────────────────────────────┐
         │      FINISH (0xB)               │
         │  Finalization:                  │
-        │  H₀=H₀+a, H₁=H₁+b, ...        │
+        │  H₀=H₀+a, H₁=H₁+b, ...          │
         │  Xuất hash_out                  │
         │  done=1                         │
         └────────────┬────────────────────┘
@@ -461,142 +461,142 @@ Module `sha256_core` sử dụng FSM (Finite State Machine) gồm 14 trạng th�
 
 ```
 ┌───────────────────────────────────────────────────────────────┐
-│  BƯỚC 1: KHỞI TẠO & TẢI GIÁ TRỊ H                            │
+│  BƯỚC 1: KHỞI TẠO & TẢI GIÁ TRỊ H                             │
 ├───────────────────────────────────────────────────────────────┤
 │                                                               │
 │  Khi start=1:                                                 │
-│  1. FSM: IDLE → LOAD_H_SET                                   │
-│  2. Thiết lập H_addr = 0 (yêu cầu H[0] từ ROM)              │
-│  3. Chờ 1 CLK để dữ liệu sẵn sàng                            │
-│  4. FSM: LOAD_H_SET → LOAD_H_CAPTURE                         │
-│  5. Capture H_value vào H_reg[0]                             │
-│  6. Nếu h_idx < 7:                                           │
-│     - H_addr = h_idx + 1 (yêu cầu H tiếp theo)              │
-│     - FSM → LOAD_H_SET (quay lại bước 2)                    │
-│  7. Khi h_idx = 7: FSM → LOAD_H_DONE                        │
+│  1. FSM: IDLE → LOAD_H_SET                                    │
+│  2. Thiết lập H_addr = 0 (yêu cầu H[0] từ ROM)                │
+│  3. Chờ 1 CLK để dữ liệu sẵn sàng                             │
+│  4. FSM: LOAD_H_SET → LOAD_H_CAPTURE                          │
+│  5. Capture H_value vào H_reg[0]                              │
+│  6. Nếu h_idx < 7:                                            │
+│     - H_addr = h_idx + 1 (yêu cầu H tiếp theo)                │
+│     - FSM → LOAD_H_SET (quay lại bước 2)                      │
+│  7. Khi h_idx = 7: FSM → LOAD_H_DONE                          │
 │                                                               │
-│  Kết quả: H_reg[0..7] = [0x6a09e667, 0xbb67ae85, ...]      │
-│  Thời gian: 8 × 2 CLK = 16 CLK                              │
+│  Kết quả: H_reg[0..7] = [0x6a09e667, 0xbb67ae85, ...]         │
+│  Thời gian: 8 × 2 CLK = 16 CLK                                │
 │                                                               │
 └───────────────────────────────────────────────────────────────┘
             ▼
 ┌───────────────────────────────────────────────────────────────┐
-│  BƯỚC 2: TẢI KHỐI DỮ LIỆU INPUT                              │
+│  BƯỚC 2: TẢI KHỐI DỮ LIỆU INPUT                               │
 ├───────────────────────────────────────────────────────────────┤
 │                                                               │
-│  1. FSM: LOAD_H_DONE → LOAD_W0                               │
-│  2. Trích xuất W[0..15] từ block_in[511:0]:                  │
-│     for i=0 to 15:                                           │
-│       W[i] <= block_in[511 - i*32 : (511-i*32)-31]         │
+│  1. FSM: LOAD_H_DONE → LOAD_W0                                │
+│  2. Trích xuất W[0..15] từ block_in[511:0]:                   │
+│     for i=0 to 15:                                            │
+│       W[i] <= block_in[511 - i*32 : (511-i*32)-31]            │
 │                                                               │
-│  Ví dụ: block_in = 512'b...                                  │
-│     W[0] = block_in[511:480]   (bits cao nhất)               │
-│     W[1] = block_in[479:448]                                 │
+│  Ví dụ: block_in = 512'b...                                   │
+│     W[0] = block_in[511:480]   (bits cao nhất)                │
+│     W[1] = block_in[479:448]                                  │
 │     ...                                                       │
-│     W[15] = block_in[31:0]     (bits thấp nhất)              │
+│     W[15] = block_in[31:0]     (bits thấp nhất)               │
 │                                                               │
-│  3. Đặt w_idx = 16 (chuẩn bị mở rộng)                        │
-│  4. FSM → EXPAND_CALC                                        │
+│  3. Đặt w_idx = 16 (chuẩn bị mở rộng)                         │
+│  4. FSM → EXPAND_CALC                                         │
 │                                                               │
-│  Thời gian: 1 CLK                                            │
-│                                                               │
-└───────────────────────────────────────────────────────────────┘
-            ▼
-┌───────────────────────────────────────────────────────────────┐
-│  BƯỚC 3: MỞ RỘNG MESSAGE (MESSAGE EXPANSION)                 │
-├───────────────────────────────────────────────────────────────┤
-│                                                               │
-│  Tính W[16..63] dùng công thức:                              │
-│  W[t] = σ1(W[t-2]) + W[t-7] + σ0(W[t-15]) + W[t-16]        │
-│                                                               │
-│  Trong đó:                                                   │
-│  σ0(x) = ROTR(x,7) ⊕ ROTR(x,18) ⊕ SHR(x,3)                 │
-│  σ1(x) = ROTR(x,17) ⊕ ROTR(x,19) ⊕ SHR(x,10)               │
-│                                                               │
-│  Quy trình (Lặp từ w_idx=16 đến 63):                         │
-│  1. FSM: EXPAND_CALC                                         │
-│     - Tính t_S0 = σ0(W[w_idx-15])                           │
-│     - Tính t_S1 = σ1(W[w_idx-2])                            │
-│  2. FSM: EXPAND_W                                            │
-│     - W[w_idx] = W[w_idx-16] + t_S0 + W[w_idx-7] + t_S1    │
-│     - w_idx += 1                                             │
-│  3. Nếu w_idx < 64: Quay lại EXPAND_CALC                   │
-│  4. Nếu w_idx = 64: FSM → COMPRESS_CALC_1                  │
-│                                                               │
-│  Thời gian: 48 × 2 CLK = 96 CLK                             │
-│                                                               │
-│  Kết quả: W[0..63] được tính toàn bộ                        │
+│  Thời gian: 1 CLK                                             │
 │                                                               │
 └───────────────────────────────────────────────────────────────┘
             ▼
 ┌───────────────────────────────────────────────────────────────┐
-│  BƯỚC 4: NÉN DỮ LIỆU (COMPRESSION - 64 VÒNG)                │
+│  BƯỚC 3: MỞ RỘNG MESSAGE (MESSAGE EXPANSION)                  │
 ├───────────────────────────────────────────────────────────────┤
 │                                                               │
-│  Khởi tạo a-h từ H_reg:                                      │
-│  a = H_reg[0], b = H_reg[1], ..., h = H_reg[7]             │
-│  round = 0, K_addr = 0                                       │
+│  Tính W[16..63] dùng công thức:                               │
+│  W[t] = σ1(W[t-2]) + W[t-7] + σ0(W[t-15]) + W[t-16]           │
 │                                                               │
-│  Lặp từ round=0 đến 63 (64 vòng):                            │
+│  Trong đó:                                                    │
+│  σ0(x) = ROTR(x,7) ⊕ ROTR(x,18) ⊕ SHR(x,3)                  │
+│  σ1(x) = ROTR(x,17) ⊕ ROTR(x,19) ⊕ SHR(x,10)                │
 │                                                               │
-│  ┌─ COMPRESS_CALC_1                                         │
-│  │  Tính các hàm trung gian:                                 │
-│  │  Σ1(e) = ROTR(e,6) ⊕ ROTR(e,11) ⊕ ROTR(e,25)           │
-│  │  Ch(e,f,g) = (e ∧ f) ⊕ (¬e ∧ g)                         │
-│  │  Σ0(a) = ROTR(a,2) ⊕ ROTR(a,13) ⊕ ROTR(a,22)           │
-│  │  Maj(a,b,c) = (a ∧ b) ⊕ (a ∧ c) ⊕ (b ∧ c)              │
-│  │                                                           │
-│  ├─ COMPRESS_CALC_2_WAIT                                    │
-│  │  Chờ K[round] sẵn sàng từ ROM                            │
-│  │                                                           │
-│  ├─ COMPRESS_CALC_2                                         │
-│  │  Tính T1 và T2:                                           │
-│  │  T1 = h + Σ1(e) + Ch(e,f,g) + K[round] + W[round]       │
-│  │  T2 = Σ0(a) + Maj(a,b,c)                                 │
-│  │                                                           │
-│  └─ COMPRESS_UPDATE                                         │
-│     Cập nhật a-h (chuyển dịch vòng):                         │
-│     h ← g                                                    │
-│     g ← f                                                    │
-│     f ← e                                                    │
-│     e ← d + T1                                               │
-│     d ← c                                                    │
-│     c ← b                                                    │
-│     b ← a                                                    │
-│     a ← T1 + T2                                              │
+│  Quy trình (Lặp từ w_idx=16 đến 63):                          │
+│  1. FSM: EXPAND_CALC                                          │
+│     - Tính t_S0 = σ0(W[w_idx-15])                             │
+│     - Tính t_S1 = σ1(W[w_idx-2])                              │
+│  2. FSM: EXPAND_W                                             │
+│     - W[w_idx] = W[w_idx-16] + t_S0 + W[w_idx-7] + t_S1       │
+│     - w_idx += 1                                              │
+│  3. Nếu w_idx < 64: Quay lại EXPAND_CALC                      │
+│  4. Nếu w_idx = 64: FSM → COMPRESS_CALC_1                     │
 │                                                               │
-│     Nếu round < 63:                                          │
-│       K_addr = round + 1                                     │
-│       round += 1                                             │
-│       → COMPRESS_CALC_1                                      │
+│  Thời gian: 48 × 2 CLK = 96 CLK                               │
 │                                                               │
-│  Thời gian: 64 × 4 CLK = 256 CLK                            │
-│  (Tính từ COMPRESS_CALC_1 đến kết thúc COMPRESS_UPDATE)     │
+│  Kết quả: W[0..63] được tính toàn bộ                          │
 │                                                               │
 └───────────────────────────────────────────────────────────────┘
             ▼
 ┌───────────────────────────────────────────────────────────────┐
-│  BƯỚC 5: HOÀN THIỆN (FINALIZATION)                           │
+│  BƯỚC 4: NÉN DỮ LIỆU (COMPRESSION - 64 VÒNG)                  │
 ├───────────────────────────────────────────────────────────────┤
 │                                                               │
-│  1. FSM: COMPRESS_UPDATE → FINISH                            │
-│  2. Cập nhật H_reg (add-and-compress):                       │
-│     H_reg[0] ← H_reg[0] + a                                 │
-│     H_reg[1] ← H_reg[1] + b                                 │
-│     H_reg[2] ← H_reg[2] + c                                 │
-│     H_reg[3] ← H_reg[3] + d                                 │
-│     H_reg[4] ← H_reg[4] + e                                 │
-│     H_reg[5] ← H_reg[5] + f                                 │
-│     H_reg[6] ← H_reg[6] + g                                 │
-│     H_reg[7] ← H_reg[7] + h                                 │
+│  Khởi tạo a-h từ H_reg:                                       │
+│  a = H_reg[0], b = H_reg[1], ..., h = H_reg[7]                │
+│  round = 0, K_addr = 0                                        │
 │                                                               │
-│  3. Ghép H_reg[0..7] thành hash_out[255:0]:                 │
-│     hash_out = {H_reg[0], H_reg[1], ..., H_reg[7]}         │
+│  Lặp từ round=0 đến 63 (64 vòng):                             │
 │                                                               │
-│  4. Đặt done = 1 (tín hiệu hoàn thành)                       │
-│  5. FSM → IDLE (sẵn sàng cho lần xử lý tiếp theo)           │
+│  ┌─ COMPRESS_CALC_1                                           │
+│  │  Tính các hàm trung gian:                                  │
+│  │  Σ1(e) = ROTR(e,6) ⊕ ROTR(e,11) ⊕ ROTR(e,25)             │
+│  │  Ch(e,f,g) = (e ∧ f) ⊕ (¬e ∧ g)                           │
+│  │  Σ0(a) = ROTR(a,2) ⊕ ROTR(a,13) ⊕ ROTR(a,22)             │
+│  │  Maj(a,b,c) = (a ∧ b) ⊕ (a ∧ c) ⊕ (b ∧ c)                │
+│  │                                                            │
+│  ├─ COMPRESS_CALC_2_WAIT                                      │
+│  │  Chờ K[round] sẵn sàng từ ROM                              │
+│  │                                                            │
+│  ├─ COMPRESS_CALC_2                                           │
+│  │  Tính T1 và T2:                                            │
+│  │  T1 = h + Σ1(e) + Ch(e,f,g) + K[round] + W[round]          │
+│  │  T2 = Σ0(a) + Maj(a,b,c)                                   │
+│  │                                                            │
+│  └─ COMPRESS_UPDATE                                           │
+│     Cập nhật a-h (chuyển dịch vòng):                          │
+│     h ← g                                                     │
+│     g ← f                                                     │
+│     f ← e                                                     │
+│     e ← d + T1                                                │
+│     d ← c                                                     │
+│     c ← b                                                     │
+│     b ← a                                                     │
+│     a ← T1 + T2                                               │
 │                                                               │
-│  Thời gian: 1 CLK                                            │
+│     Nếu round < 63:                                           │
+│       K_addr = round + 1                                      │
+│       round += 1                                              │
+│       → COMPRESS_CALC_1                                       │
+│                                                               │
+│  Thời gian: 64 × 4 CLK = 256 CLK                              │
+│  (Tính từ COMPRESS_CALC_1 đến kết thúc COMPRESS_UPDATE)       │
+│                                                               │
+└───────────────────────────────────────────────────────────────┘
+            ▼
+┌───────────────────────────────────────────────────────────────┐
+│  BƯỚC 5: HOÀN THIỆN (FINALIZATION)                            │
+├───────────────────────────────────────────────────────────────┤
+│                                                               │
+│  1. FSM: COMPRESS_UPDATE → FINISH                             │
+│  2. Cập nhật H_reg (add-and-compress):                        │
+│     H_reg[0] ← H_reg[0] + a                                   │
+│     H_reg[1] ← H_reg[1] + b                                   │
+│     H_reg[2] ← H_reg[2] + c                                   │
+│     H_reg[3] ← H_reg[3] + d                                   │
+│     H_reg[4] ← H_reg[4] + e                                   │
+│     H_reg[5] ← H_reg[5] + f                                   │
+│     H_reg[6] ← H_reg[6] + g                                   │
+│     H_reg[7] ← H_reg[7] + h                                   │
+│                                                               │
+│  3. Ghép H_reg[0..7] thành hash_out[255:0]:                   │
+│     hash_out = {H_reg[0], H_reg[1], ..., H_reg[7]}            │
+│                                                               │
+│  4. Đặt done = 1 (tín hiệu hoàn thành)                        │
+│  5. FSM → IDLE (sẵn sàng cho lần xử lý tiếp theo)             │
+│                                                               │
+│  Thời gian: 1 CLK                                             │
 │                                                               │
 └───────────────────────────────────────────────────────────────┘
 
