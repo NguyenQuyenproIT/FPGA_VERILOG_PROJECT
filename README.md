@@ -327,15 +327,15 @@ H[7] = 0x5be0cd19
 
 ##### a) `hang_so_tron_K.mem`
 - **Định Nghĩa**: Round constant K values cho SHA-256
-- **Ý Nghĩa**: Được tính từ phần lẻ của căn bậc hai của các số nguyên tố
-- **Giá Trị**: 64 từ hex 32-bit
+- **Ý Nghĩa**: Được tính từ phần thập phân sau khi căn bậc 3 của 64 số nguyên tố đầu tiên
+- **Giá Trị**: 64 word hex 32-bit
 - **Phạm Vi**: K[0] = 428a2f98 đến K[63] = 1f83d9ab
 - **Mục Đích**: Tăng tính không tuyến tính của thuật toán
 
 ##### b) `initial_hash_values.mem`
 - **Định Nghĩa**: Initial hash values (H₀ đến H₇)
 - **Ý Nghĩa**: Giá trị khởi tạo ban đầu cho mỗi lần xử lý
-- **Giá Trị**: 8 từ hex 32-bit
+- **Giá Trị**: 8 word hex 32-bit
 - **Phạm Vi**: H[0] = 6a09e667 đến H[7] = 5be0cd19
 - **Mục Đích**: Điểm bắt đầu chuẩn cho tất cả SHA-256 computations
 
