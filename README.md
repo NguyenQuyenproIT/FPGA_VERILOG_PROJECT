@@ -290,10 +290,10 @@ Output: dout[31:0]
 
 **Nội Dung**: 64 giá trị K từ K[0] đến K[63]
 ```
-K[0]  = 0x428a2f98    (căn bậc hai của số nguyên tố thứ 1)
-K[1]  = 0x71374491    (căn bậc hai của số nguyên tố thứ 2)
+K[0]  = 0x428a2f98    (căn bậc ba của số nguyên tố thứ 1)
+K[1]  = 0x71374491    (căn bậc ba của số nguyên tố thứ 2)
 ...
-K[63] = 0x1f83d9ab    (căn bậc hai của số nguyên tố thứ 64)
+K[63] = 0x1f83d9ab    (căn bậc ba của số nguyên tố thứ 64)
 ```
 
 #### 3. **rom_H Module**
