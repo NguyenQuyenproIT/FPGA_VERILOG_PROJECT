@@ -332,7 +332,7 @@ H[7] = 0x5be0cd19
 - **Phạm Vi**: K[0] = 428a2f98 đến K[63] = 1f83d9ab
 - **Mục Đích**: Tăng tính không tuyến tính của thuật toán
 
-##### b) `hash_value_eight.mem`
+##### b) `initial_hash_values.mem`
 - **Định Nghĩa**: Initial hash values (H₀ đến H₇)
 - **Ý Nghĩa**: Giá trị khởi tạo ban đầu cho mỗi lần xử lý
 - **Giá Trị**: 8 từ hex 32-bit
