@@ -25,7 +25,7 @@ module rom_H #(parameter DATA_WIDTH = 32, parameter MEM_SIZE = 8)(
     reg [DATA_WIDTH-1:0] rom [0:MEM_SIZE-1];
     
     initial begin
-        $readmemh("hash_value_eight.mem", rom);
+        $readmemh("initial_hash_values.mem", rom);
     end
     
     always @(posedge clk) begin
